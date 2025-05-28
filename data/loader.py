@@ -21,7 +21,7 @@ def extract_unique_values(data: pd.DataFrame, col: str):
             col (str): The name of the column to extract unique values from.
 
         Returns:
-            list: A list of unique, stripped values found in the specified column.
+            list: A sorted list of unique, stripped values found in the specified column.
 
         Raises:
             ValueError: If the specified column does not exist in the DataFrame.
@@ -30,4 +30,4 @@ def extract_unique_values(data: pd.DataFrame, col: str):
     if col not in data.columns:
         raise ValueError(f"Data {data} does not have {col} column")
     else:
-        return list({t.strip() for notes in data[col] for t in str(notes).split(',') if pd.notnull(notes)})
+        return sorted(list({t.strip() for notes in data[col] for t in str(notes).split(',') if pd.notnull(notes)}))

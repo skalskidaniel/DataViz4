@@ -10,22 +10,30 @@ app = Dash(name="AlcoDash", external_stylesheets=[dbc.themes.BOOTSTRAP])
 data_beer, data_spirits, data_wine = load_data()
 
 
-categories = taste = food = []
+data = data_beer
+categories = extract_unique_values(data, 'Categories')
+taste = extract_unique_values(data, 'Tasting Notes')
+food = []
 
 @app.callback(
-    Output('some-output-id', 'children'),
-    Input('some-input-id', 'value')
+    Output('category', 'options'),
+    Output('taste-filter', 'options'),
+    Output('food-filter', 'options'),
+    Output('food-filter', 'disabled'),
+    Input('type', 'value')
 )
-def set_drink_type(drink_type):
-    if drink_type == 'Beer':
+def set_drink_type(type):
+    if type == 'Beer':
         data = data_beer
-    elif drink_type == 'Spirits':
+    elif type == 'Spirits':
         data = data_spirits
     else:
         data = data_wine
     categories = extract_unique_values(data, 'Categories')
     taste = extract_unique_values(data, 'Tasting Notes')
-    food = extract_unique_values(data, 'Food Pairing') if drink_type == 'Wine' else []
+    food = extract_unique_values(data, 'Food Pairing') if type == 'Wine' else []
+    
+    return categories, taste, food, len(food) <= 0
 
 app.layout = dbc.Container([
     # Title row
@@ -40,12 +48,12 @@ app.layout = dbc.Container([
     # Main content row
     dbc.Row([
         create_sidebar(categories, taste, food),
-        create_content_area()
+        # create_content_area()
     ])
 ], fluid=True)
 
 # Register callbacks
-register_callbacks(app)
+# register_callbacks(app)
 
 # Run server
 if __name__ == '__main__':
