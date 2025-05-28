@@ -52,4 +52,4 @@ def create_sidebar(categories, taste, food):
                     className="mt-3 mb-1"
                 )
             ], width=3, className="bg-light p-3 border rounded mr-1 ml-1")
-        ])
+        ], class_name="mr-3 ml-3 p-3")
