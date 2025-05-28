@@ -1,17 +1,29 @@
-import kagglehub
 import pandas as pd
-import os
 
-def load_data():
-    dataset_path = kagglehub.dataset_download("limtis/wikiliq-dataset")
+def load_data(type: str) -> pd.DataFrame:
+    """
+        Loads data from csv file
+        
+        Args:
+        type (str): [beer, wine, spirits]
 
-    data_beer = pd.read_csv(os.path.join(dataset_path, "beer_data.csv"))
-    data_spirits = pd.read_csv(os.path.join(dataset_path, "spirits_data.csv"))
-    data_wine = pd.read_csv(os.path.join(dataset_path, "wine_data.csv"))
+        Returns:
+            data: pandas DataFrame
+    """
     
-    return data_beer, data_spirits, data_wine
+    data = None
+    if type.lower() == 'beer':
+        data = pd.read_csv("data/beer_data.csv")
+    elif type.lower() == 'wine':
+        data = pd.read_csv("data/wine_data.csv")
+    elif type.lower() == 'spirits':
+        data = pd.read_csv("data/spirits_data.csv")
+    else:
+        raise ValueError(f"Cannot find data for {type}")
+    
+    return data
 
-def extract_unique_values(data: pd.DataFrame, col: str):
+def extract_unique_values(data: pd.DataFrame, col: str) -> list:
     """
         Extracts unique, stripped values from a specified column in a pandas DataFrame,
         where each cell may contain comma-separated values.

@@ -7,33 +7,10 @@ from callbacks.interactions import register_callbacks
 
 app = Dash(name="AlcoDash", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-data_beer, data_spirits, data_wine = load_data()
-
-
-data = data_beer
+data = load_data('Beer')
 categories = extract_unique_values(data, 'Categories')
 taste = extract_unique_values(data, 'Tasting Notes')
 food = []
-
-@app.callback(
-    Output('category', 'options'),
-    Output('taste-filter', 'options'),
-    Output('food-filter', 'options'),
-    Output('food-filter', 'disabled'),
-    Input('type', 'value')
-)
-def set_drink_type(type):
-    if type == 'Beer':
-        data = data_beer
-    elif type == 'Spirits':
-        data = data_spirits
-    else:
-        data = data_wine
-    categories = extract_unique_values(data, 'Categories')
-    taste = extract_unique_values(data, 'Tasting Notes')
-    food = extract_unique_values(data, 'Food Pairing') if type == 'Wine' else []
-    
-    return categories, taste, food, len(food) <= 0
 
 app.layout = dbc.Container([
     # Title row
@@ -53,7 +30,7 @@ app.layout = dbc.Container([
 ], fluid=True)
 
 # Register callbacks
-# register_callbacks(app)
+register_callbacks(app)
 
 # Run server
 if __name__ == '__main__':
