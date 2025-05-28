@@ -17,3 +17,5 @@ def register_callbacks(app: Dash):
         food = extract_unique_values(data, 'Food Pairing') if type == 'Wine' else []
         
         return categories, taste, food, len(food) <= 0
+    
+    #TODO add main table callbacks
