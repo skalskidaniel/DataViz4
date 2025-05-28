@@ -21,7 +21,7 @@ app.layout = dbc.Container([
     
     dbc.Row([
         create_sidebar(categories, taste, food),
-        # create_content_area()
+        create_content_area()
     ], class_name="m-3")
 ], fluid=True)
 
