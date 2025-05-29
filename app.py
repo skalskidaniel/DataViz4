@@ -6,6 +6,7 @@ from components.top_picks import create_top_picks
 from callbacks.interactions import register_callbacks
 from components.title import create_title
 from components.overview import create_overview
+from components.general_plots import create_general_plots
 
 app = Dash(name="AlcoDash", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -18,6 +19,8 @@ selected_item = data.iloc[0]
 app.layout = dbc.Container([
 
     create_title(),
+
+    create_general_plots(),
     
     dbc.Row([
         create_sidebar(categories, taste, food),
