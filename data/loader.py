@@ -67,9 +67,22 @@ def extract_item_value(item: pd.Series, col: str):
         return sorted(list({i.strip() for i in str(item[col]).split(',')}))
 
 
-def query_data(data: pd.DataFrame, category: str, taste: list[str], food: list[str], price_range: list[int]) -> pd.DataFrame:
+from typing import Tuple
+
+def query_data(data: pd.DataFrame, category: str, taste: list[str], food: list[str], price_range: list[int]) -> Tuple[pd.DataFrame, pd.Series]:
     """
-    Filters a pandas DataFrame of food or beverage items based on category, taste, food pairing, and price range.
+        Parameters:
+            data (pd.DataFrame): The input DataFrame containing food or beverage items with columns such as "Categories", "Tasting Notes", "Food Pairing", "Price", and "Rating".
+            category (str): The category to filter by. If empty, no category filtering is applied.
+            taste (list[str]): A list of tasting notes to filter by. Each note must be present in the item's "Tasting Notes".
+            food (list[str]): A list of food pairings to filter by. Each food must be present in the item's "Food Pairing".
+            price_range (list[int]): A two-element list specifying the minimum and maximum price (inclusive) to filter by.
+        Returns:
+            Tuple[pd.DataFrame, pd.Series]:
+                - pd.DataFrame: A DataFrame containing the top 10 filtered items with columns ["No", "Name", "Price", "Rating"], sorted by "Rating" in descending order.
+                - pd.Series: The row (as a Series) of the top-rated item after filtering.
+        Raises:
+            ValueError: If price_range is not a two-element list.
     """
     cols = ["Name", "Price", "Rating"]
     
@@ -96,5 +109,11 @@ def query_data(data: pd.DataFrame, category: str, taste: list[str], food: list[s
         df = df[(df["Price_numeric"] >= price_range[0]) & (df["Price_numeric"] <= price_range[1])]
         
         df = df.drop('Price_numeric', axis=1)
-    
-    return df[cols].sort_values(by="Rating", ascending=False).head(10)
+        
+    top_item = df.sort_values(by=["Rating", "Price"], ascending=[False, True]).iloc[0]
+        
+    df = df[cols].sort_values(by=["Rating", "Price"], ascending=[False, True]).head(10)
+    df = df.reset_index(drop=True)
+    df["No"] = df.index + 1
+
+    return df[["No", "Name", "Price", "Rating"]], top_item

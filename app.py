@@ -1,6 +1,6 @@
-from dash import Dash
+from dash import Dash, html
 import dash_bootstrap_components as dbc
-from data.loader import load_data, extract_unique_values
+from data.loader import load_data, extract_unique_values, query_data
 from components.sidebar import create_sidebar
 from components.top_picks import create_top_picks
 from callbacks.interactions import register_callbacks
@@ -24,7 +24,9 @@ app.layout = dbc.Container([
         create_top_picks(data)
     ], className="m-1"),
     
-    create_overview(selected_item, data),
+    html.Div([
+        create_overview(selected_item, data)
+    ], id='overview')
     
 ], fluid=True)
 
