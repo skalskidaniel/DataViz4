@@ -4,7 +4,9 @@ import pandas as pd
 from data.loader import extract_item_value
 
 def create_overview(selected_item: pd.Series, data: pd.DataFrame):
-    
+    data["Price"] = data["Price"].astype(str).str.replace(r'[\$,]', '', regex=True)
+    data["Price"] = pd.to_numeric(data["Price"], errors="coerce")
+
     def format_value(value):
         if isinstance(value, list):
             return ', '.join(str(v) for v in value)
@@ -74,7 +76,7 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
                         ],
                         'layout': {
                             'title': 'Alcohol % vs Price',
-                            'xaxis': {'title': 'Price', 'range': [0, 100]},
+                            'xaxis': {'title': 'Price', 'range': [0, data['Price'].max() * 1.5]},
                             'yaxis': {'title': 'Alcohol % (ABV)'},
                             'legend': {
                                 'orientation': 'h',
