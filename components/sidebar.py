@@ -40,9 +40,9 @@ def create_sidebar(categories, taste, food):
                 dcc.RangeSlider(
                     id='price-range',
                     min=0,
-                    max=100,
+                    max=1000,
                     step=5,
-                    marks={i: f"${i}" for i in range(0, 101, 20)},
-                    value=[0, 50]
+                    marks={i: f"${i}" for i in range(0, 1000, 200)}, #TODO adjust price range and allow to infinity
+                    value=[0, 200]
                 )
             ], width=3, className="bg-light border rounded m-3 p-3")
