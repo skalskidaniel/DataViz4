@@ -6,6 +6,7 @@ from components.top_picks import create_top_picks
 from callbacks.interactions import register_callbacks
 from components.title import create_title
 from components.overview import create_overview
+from components.mock_graph import create_mock_graph_panel
 
 app = Dash(name="AlcoDash", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -26,7 +27,15 @@ app.layout = dbc.Container([
     
     html.Div([
         create_overview(selected_item, data)
-    ], id='overview')
+    ], id='overview'),
+    
+    dbc.Row([
+        dbc.Col(create_mock_graph_panel()),
+        dbc.Col(create_mock_graph_panel())
+    ]),
+    
+    create_mock_graph_panel(),
+    create_mock_graph_panel()
     
 ], fluid=True)
 
