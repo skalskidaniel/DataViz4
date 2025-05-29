@@ -19,3 +19,5 @@ def register_callbacks(app: Dash):
         return categories, taste, food, len(food) <= 0
     
     #TODO add main table callbacks
+    
+    #TODO add overview callbacks
