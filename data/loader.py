@@ -84,7 +84,7 @@ def query_data(data: pd.DataFrame, category: str, taste: list[str], food: list[s
         Raises:
             ValueError: If price_range is not a two-element list.
     """
-    cols = ["Name", "Price", "Rating"]
+    cols = ["Name", "Price", "Rating", "Rate Count"]
     
     df = data.copy()
 
@@ -110,10 +110,11 @@ def query_data(data: pd.DataFrame, category: str, taste: list[str], food: list[s
         
         df = df.drop('Price_numeric', axis=1)
         
-    top_item = df.sort_values(by=["Rating", "Price"], ascending=[False, True]).iloc[0]
-        
-    df = df[cols].sort_values(by=["Rating", "Price"], ascending=[False, True]).head(10)
+    df = df.sort_values(by=["Rating", "Rate Count", "Price"], ascending=[False, False, True]).head(10)
+    top_item = df.iloc[0]
+    df= df[cols]
     df = df.reset_index(drop=True)
     df["No"] = df.index + 1
+    cols = ["No"] + cols
 
-    return df[["No", "Name", "Price", "Rating"]], top_item
+    return df[cols], top_item

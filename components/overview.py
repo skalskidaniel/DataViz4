@@ -25,8 +25,10 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
                 html.P(format_value(extract_item_value(selected_item, 'Brand'))),
                 html.H4("Country"),
                 html.P(format_value(extract_item_value(selected_item, 'Country'))),
-                html.H4("Tasting notes"),
-                html.P(format_value(extract_item_value(selected_item, 'Tasting Notes')))
+                html.H4("Ratings"),
+                html.P(format_value(extract_item_value(selected_item, 'Rating'))),
+                html.H4("Rate count"),
+                html.P(format_value(extract_item_value(selected_item, 'Rate Count')))
             ]),
             
             dbc.Col([
@@ -38,10 +40,13 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
                 html.P(format_value(extract_item_value(selected_item, 'Volume'))),
                 html.H4("Suggested serving temperature"),
                 html.P(format_value(extract_item_value(selected_item, 'Suggested Serving Temperature'))),
+                html.H4("Tasting notes"),
+                html.P(format_value(extract_item_value(selected_item, 'Tasting Notes')))
             ]),
             
             dbc.Col([
                 html.H4("Investment potential"),
+                html.P("The plot shows whether it is profitable to drink this product. The lower price and higher ABV, the better."),
                 dcc.Graph(
                     id='abv-vs-price-scatter',
                     figure={
@@ -80,8 +85,10 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
                             },
                             'plot_bgcolor': '#f8f9fa',
                             'paper_bgcolor': '#f8f9fa',
+                            'margin': {'t': 40, 'b': 40, 'l': 40, 'r': 40}
                         }
-                    }
+                    },
+                    config={'displayModeBar': False}
                 ),
             ])
         ])
