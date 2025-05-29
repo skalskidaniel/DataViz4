@@ -7,6 +7,7 @@ from callbacks.interactions import register_callbacks
 from components.title import create_title
 from components.overview import create_overview
 from components.mock_graph import create_mock_graph_panel
+from components.general_plots import create_general_plots
 
 app = Dash(name="AlcoDash", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
