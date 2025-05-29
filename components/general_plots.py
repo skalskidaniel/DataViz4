@@ -1,12 +1,12 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 import pandas as pd
-from data.loader import extract_item_value
+from data.loader import extract_item_value, load_data
 
 def create_general_plots():
-    wines = pd.read_csv("data/wine_data.csv", index_col=0)
-    beers = pd.read_csv("data/beer_data.csv", index_col=0)  
-    spirits = pd.read_csv("data/spirits_data.csv", index_col=0)
+    wines = load_data("data/wine_data.csv")
+    beers = load_data("data/beer_data.csv")
+    spirits = load_data("data/spirits_data.csv")
 
     return dbc.Row([
         html.H3("General alcohol categories overview"),

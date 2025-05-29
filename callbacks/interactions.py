@@ -31,7 +31,6 @@ def register_callbacks(app: Dash):
     def generate_top_picks(type: str, category: str, tastes: list[str], food: list[str], price_range: list[int]):
         
         data = load_data(type)
-    
         q = query_data(data, category, tastes, food, price_range)
         
         if q.empty:

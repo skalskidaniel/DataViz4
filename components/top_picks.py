@@ -9,4 +9,9 @@ def create_top_picks(data: pd.DataFrame):
             html.H3("Our top picks"),
             html.Hr(),
             dbc.Table.from_dataframe(q, striped=True, bordered=True, hover=True, id='top-picks-table') # there is not really a problem, it works
+<<<<<<< HEAD
         ], className="bg-light border rounded m-3 p-3")
+=======
+        ], className="bg-light border rounded m-3 p-3"
+    )
+>>>>>>> 5342597e66b5f35a12971d153bc2e85af519e27e
