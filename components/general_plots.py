@@ -3,10 +3,13 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 from data.loader import extract_item_value
 
-def create_overview(selected_item: pd.Series, data: pd.DataFrame):
-    
+def create_general_plots():
+    wines = pd.read_csv("data/wine_data.csv", index_col=0)
+    beers = pd.read_csv("data/beer_data.csv", index_col=0)  
+    spirits = pd.read_csv("data/spirits_data.csv", index_col=0)
+
     return dbc.Row([
-        html.H3("Selected product overview"),
+        html.H3("General alcohol categories overview"),
         html.Hr(),
         dbc.Row([
             dbc.Col([
@@ -22,17 +25,6 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
                 html.P(selected_item.Country),
                 html.H4("Tasting notes"),
                 html.P(extract_item_value(selected_item, 'Tasting Notes'))
-            ]),
-            
-            dbc.Col([
-                html.H4("Description"),
-                html.P(extract_item_value(selected_item, 'Description')),
-                html.H4("Alcohol by Volume"),
-                html.P(selected_item.ABV),
-                html.H4("Available volumes"),
-                html.P(extract_item_value(selected_item, 'Volume')),
-                html.H4("Suggested serving temperature"),
-                html.P(extract_item_value(selected_item, 'Suggested Serving Temperature')),
             ]),
             
             dbc.Col([

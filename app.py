@@ -24,7 +24,7 @@ app.layout = dbc.Container([
         create_top_picks(data)
     ], className="m-1"),
     
-    create_overview(selected_item),
+    create_overview(selected_item, data),
     
 ], fluid=True)
 
