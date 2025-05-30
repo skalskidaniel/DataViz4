@@ -33,12 +33,12 @@ app.layout = dbc.Container([
     ], id='overview'),
     
     dbc.Row([
-        dbc.Col(create_abv_by_type()),
-        dbc.Col(create_price_distribution())
+        dbc.Col(create_mock_graph_panel()),
+        dbc.Col(create_mock_graph_panel())
     ]),
     
     dbc.Row([
-        dbc.Col(create_ratings_plot()),
+        dbc.Col(create_mock_graph_panel()),
         dbc.Col(create_mock_graph_panel())
     ])
     

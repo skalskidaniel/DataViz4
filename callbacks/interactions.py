@@ -1,5 +1,5 @@
 from dash import Input, Output, Dash, html
-from data.loader import extract_unique_values, load_data, query_data
+from data.loader import extract_unique_values, load_data, get_filtered_items
 import pandas as pd
 from components.overview import create_overview
 
@@ -32,7 +32,7 @@ def register_callbacks(app: Dash):
     def generate_top_picks(type: str, category: str, tastes: list[str], food: list[str], price_range: list[int]):
         
         data = load_data(type)
-        q = query_data(data, category, tastes, food, price_range)[0]
+        q = get_filtered_items(data, category, tastes, food, price_range)[0]
         
         if q.empty:
             return [
@@ -60,6 +60,6 @@ def register_callbacks(app: Dash):
     def generate_overview(type: str, category: str, tastes: list[str], food: list[str], price_range: list[int]):
         
         data = load_data(type)
-        item = query_data(data, category, tastes, food, price_range)[1]
+        item = get_filtered_items(data, category, tastes, food, price_range)[1]
         
         return create_overview(item, data)

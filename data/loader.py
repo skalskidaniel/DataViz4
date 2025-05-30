@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as np
+from typing import Tuple
 
 def load_data(type: str) -> pd.DataFrame:
     """
@@ -47,6 +47,7 @@ def extract_unique_values(data: pd.DataFrame, col: str) -> list:
     else:
         return sorted(list({t.strip() for i in data[col] for t in str(i).split(',') if pd.notnull(i)}))
     
+    
 def extract_item_value(item: pd.Series, col: str):
     """
     Extracts and returns a sorted list of unique, stripped values from a specified column in a pandas Series.
@@ -67,9 +68,7 @@ def extract_item_value(item: pd.Series, col: str):
         return sorted(list({i.strip() for i in str(item[col]).split(',')}))
 
 
-from typing import Tuple
-
-def query_data(data: pd.DataFrame, category: str, taste: list[str], food: list[str], price_range: list[int]) -> Tuple[pd.DataFrame, pd.Series]:
+def get_filtered_items(data: pd.DataFrame, category: str, taste: list[str], food: list[str], price_range: list[int]) -> Tuple[pd.DataFrame, pd.Series]:
     """
         Parameters:
             data (pd.DataFrame): The input DataFrame containing food or beverage items with columns such as "Categories", "Tasting Notes", "Food Pairing", "Price", and "Rating".
@@ -111,7 +110,10 @@ def query_data(data: pd.DataFrame, category: str, taste: list[str], food: list[s
         df = df.drop('Price_numeric', axis=1)
         
     df = df.sort_values(by=["Rating", "Rate Count", "Price"], ascending=[False, False, True]).head(10)
-    top_item = df.iloc[0]
+    top_item = pd.Series()
+    if df.size > 0:
+        top_item = df.iloc[0]
+    
     df= df[cols]
     df = df.reset_index(drop=True)
     df["No"] = df.index + 1
