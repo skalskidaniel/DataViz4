@@ -73,4 +73,4 @@ def register_callbacks(app: Dash):
             else:
                 selected_item = pd.Series()
         
-        return create_overview(selected_item, data)
+        return create_overview(selected_item, filtered_data)
