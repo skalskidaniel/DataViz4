@@ -10,6 +10,8 @@ from components.mock_graph import create_mock_graph_panel
 from components.abv_plot import create_abv_by_type
 from components.prices_plot import create_price_distribution
 from components.ratings_plot import create_ratings_plot
+from components.about import create_about_section
+from components.logo import create_logo
 
 app = Dash(name="AlcoDash", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -23,6 +25,11 @@ selected_item = data.iloc[0]
 app.layout = dbc.Container([
 
     create_title(),
+    
+    dbc.Row([
+        create_about_section(),
+        create_logo()
+    ], className="m-1"),
     
     dbc.Row([
         create_sidebar(categories, countries, taste, food),
