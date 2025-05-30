@@ -1,4 +1,4 @@
-from dash import Dash, html
+from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 from data.loader import load_data, extract_unique_values
 from components.sidebar import create_sidebar
@@ -23,6 +23,8 @@ food = []
 selected_item = data.iloc[0]
 
 app.layout = dbc.Container([
+    
+    dcc.Store(id='selected-item-store'),
 
     create_title(),
     

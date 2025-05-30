@@ -13,7 +13,7 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
         return str(value)
 
     return dbc.Row([
-        html.H3("Top product overview"),
+        html.H3("Selected product overview"),
         html.Hr(),
         dbc.Row([
             dbc.Col([

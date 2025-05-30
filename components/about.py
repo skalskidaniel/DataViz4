@@ -15,7 +15,7 @@ def create_about_section():
             ]),
             html.P([
                 html.B("3. "),
-                "Top recommendations are selected based on a computed score: MAX{(ABV × 10) + (Rating × RateCount) − (Price × 2), 0}."
+                "Top recommendations are selected based on a computed score: (ABV × 10) + (Rating × RateCount) − (Price × 2)"
             ]),
             html.P([
                 html.B("4. "),
