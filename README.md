@@ -11,7 +11,6 @@
 2. Top producers of given drink type (take into account ratings)
 3. Bar chart of categories, which category is most popular
 5. Heatmap of tasting notes
-6. Histogram showing price in current drink type
 
 
 ## Score
