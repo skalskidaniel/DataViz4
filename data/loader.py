@@ -1,5 +1,4 @@
 import pandas as pd
-from typing import Tuple
 
 def load_data(type: str) -> pd.DataFrame:
     """
@@ -68,28 +67,20 @@ def extract_item_value(item: pd.Series, col: str):
         return sorted(list({i.strip() for i in str(item[col]).split(',')}))
 
 
-def get_filtered_items(data: pd.DataFrame, category: str, taste: list[str], food: list[str], price_range: list[int]) -> Tuple[pd.DataFrame, pd.Series]:
+def get_filtered_items(data: pd.DataFrame, category: str, country: str, taste: list[str], food: list[str], price_range: list[int]) -> pd.DataFrame:
+    """    
+        Filters a DataFrame of food or beverage items based on category, tasting notes, food pairings, and price range.
+        data (pd.DataFrame): The input DataFrame containing items with columns such as "Categories", "Country", "Tasting Notes", "Food Pairing", "Price", and "Rating".
+        pd.DataFrame: The filtered DataFrame after applying all filters.
     """
-        Parameters:
-            data (pd.DataFrame): The input DataFrame containing food or beverage items with columns such as "Categories", "Tasting Notes", "Food Pairing", "Price", and "Rating".
-            category (str): The category to filter by. If empty, no category filtering is applied.
-            taste (list[str]): A list of tasting notes to filter by. Each note must be present in the item's "Tasting Notes".
-            food (list[str]): A list of food pairings to filter by. Each food must be present in the item's "Food Pairing".
-            price_range (list[int]): A two-element list specifying the minimum and maximum price (inclusive) to filter by.
-        Returns:
-            Tuple[pd.DataFrame, pd.Series]:
-                - pd.DataFrame: A DataFrame containing the top 10 filtered items with columns ["No", "Name", "Price", "Rating"], sorted by "Rating" in descending order.
-                - pd.Series: The row (as a Series) of the top-rated item after filtering.
-        Raises:
-            ValueError: If price_range is not a two-element list.
-    """
-    cols = ["Name", "Price", "Rating", "Rate Count"]
-    
     df = data.copy()
 
     if category:
         df = df[df["Categories"].apply(lambda x: category in (x if isinstance(x, list) else str(x).split(',')))]
 
+    if country:
+        df = df[df["Country"].apply(lambda x: country in (x if isinstance(x, list) else str(x).split(',')))]
+        
     if taste:
         for t in taste:
             df = df[df["Tasting Notes"].apply(lambda x: t in (x if isinstance(x, list) else str(x).split(',')))]
@@ -101,22 +92,39 @@ def get_filtered_items(data: pd.DataFrame, category: str, taste: list[str], food
     if len(price_range) != 2:
         raise ValueError("price_range must be a two-element list")
     
-    if 'Price' in df.columns:
-        df["Price_numeric"] = df["Price"].astype(str).str.replace(r'[\$,]', '', regex=True)
-        df["Price_numeric"] = pd.to_numeric(df["Price_numeric"], errors="coerce")
-        
-        df = df[(df["Price_numeric"] >= price_range[0]) & (df["Price_numeric"] <= price_range[1])]
-        
-        df = df.drop('Price_numeric', axis=1)
-        
-    df = df.sort_values(by=["Rating", "Rate Count", "Price"], ascending=[False, False, True]).head(10)
-    top_item = pd.Series()
-    if df.size > 0:
-        top_item = df.iloc[0]
+    df["Price_numeric"] = df["Price"].astype(str).str.replace(r'[\$,]', '', regex=True)
+    df["Price_numeric"] = pd.to_numeric(df["Price_numeric"], errors="coerce")
     
-    df= df[cols]
-    df = df.reset_index(drop=True)
-    df["No"] = df.index + 1
-    cols = ["No"] + cols
+    df = df[(df["Price_numeric"] >= price_range[0]) & (df["Price_numeric"] <= price_range[1])]
+    
+    df = df.drop('Price_numeric', axis=1)
 
-    return df[cols], top_item
+    return df
+
+def get_top_scored_items(data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Returns the top 10 items from the input DataFrame based on a custom score.
+    The score for each item is calculated as:
+        Score = max(ABV * 10 + Rating * RateCount - Price * 2, 0)
+    where:
+        - ABV: Alcohol by volume (expected as a float or convertible to float)
+        - Rating: User rating (expected as a float or convertible to float)
+        - RateCount: Number of ratings (expected as a float or convertible to float)
+        - Price: Price value (expected as a string with optional '$' and ',' characters, convertible to float)
+    Parameters:
+        data (pd.DataFrame): Input DataFrame containing columns 'ABV', 'Rating', 'RateCount', and 'Price'.
+    Returns:
+        pd.DataFrame: DataFrame containing the top 10 items sorted by the computed 'Score' in descending order.
+    """
+    
+    df = data.copy()
+
+    df["Score"] = (
+        df["ABV"].astype(str).str.replace('%', '', regex=False).astype(float) * 10
+        + df["Rating"].astype(float) * df["Rate Count"].astype(float)
+        - df["Price"].astype(str).str.replace(r'[\$,]', '', regex=True).astype(float) * 2
+    ).clip(lower=0).round()
+    
+    df = df.sort_values("Score", ascending=False)
+    
+    return df

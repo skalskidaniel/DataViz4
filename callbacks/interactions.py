@@ -1,5 +1,5 @@
 from dash import Input, Output, Dash, html
-from data.loader import extract_unique_values, load_data, get_filtered_items
+from data.loader import extract_unique_values, load_data, get_filtered_items, get_top_scored_items
 import pandas as pd
 from components.overview import create_overview
 
@@ -25,26 +25,30 @@ def register_callbacks(app: Dash):
         Output('top-picks-table', 'children'),
         Input('type', 'value'),
         Input('category', 'value'),
+        Input('country', 'value'),
         Input('taste-filter', 'value'),
         Input('food-filter', 'value'),
         Input('price-range', 'value')
     )
-    def generate_top_picks(type: str, category: str, tastes: list[str], food: list[str], price_range: list[int]):
+    def generate_top_picks(type: str, category: str, country: str, tastes: list[str], food: list[str], price_range: list[int]):
         
         data = load_data(type)
-        q = get_filtered_items(data, category, tastes, food, price_range)[0]
+        filtered_data = get_filtered_items(data, category, country, tastes, food, price_range)
+        top_items = get_top_scored_items(filtered_data)
+        cols = ["Name", "Country", "Price", "Rating", "Score"]
+        top_items = top_items[cols].head(13)
         
-        if q.empty:
+        if top_items.empty:
             return [
                 html.Thead(html.Tr([html.Th(col) for col in ["Name", "Type", "Price", "Rating"]])),
                 html.Tbody(html.Tr([html.Td('No results found.', colSpan=4, className="text-center")]))
             ]
         
-        header = html.Thead(html.Tr([html.Th(col) for col in q.columns]))
+        header = html.Thead(html.Tr([html.Th(col) for col in top_items.columns]))
         
         rows = []
-        for _, row in q.iterrows():
-            rows.append(html.Tr([html.Td(row[col]) for col in q.columns]))
+        for _, row in top_items.iterrows():
+            rows.append(html.Tr([html.Td(row[col]) for col in top_items.columns]))
         body = html.Tbody(rows)
         
         return [header, body]
@@ -53,13 +57,15 @@ def register_callbacks(app: Dash):
         Output('overview', 'children'),
         Input('type', 'value'),
         Input('category', 'value'),
+        Input('country', 'value'),
         Input('taste-filter', 'value'),
         Input('food-filter', 'value'),
         Input('price-range', 'value')
     )
-    def generate_overview(type: str, category: str, tastes: list[str], food: list[str], price_range: list[int]):
+    def generate_overview(type: str, category: str, country: str, tastes: list[str], food: list[str], price_range: list[int]):
         
         data = load_data(type)
-        item = get_filtered_items(data, category, tastes, food, price_range)[1]
+        filtered_data = get_filtered_items(data, category, country, tastes, food, price_range)
+        top_item = get_top_scored_items(filtered_data).iloc[0]
         
-        return create_overview(item, data)
+        return create_overview(top_item, data)

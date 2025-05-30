@@ -18,3 +18,6 @@
 ## Score
 
 MAX{ABV * 10 + Rating * RateCount - Price * 2, 0}
+
+## TODO
+- Add about section

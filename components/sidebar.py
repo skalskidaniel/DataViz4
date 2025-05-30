@@ -1,7 +1,7 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 
-def create_sidebar(categories, taste, food):
+def create_sidebar(categories, countries, taste, food):
     return  dbc.Col([
                 html.H3("Adjust your preferences"),
                 html.Hr(),
@@ -18,8 +18,14 @@ def create_sidebar(categories, taste, food):
                 
                 html.H4("Category", className='mt-3'),
                 dcc.Dropdown(
-                id='category',
-                options=[{'label': c, 'value': c} for c in categories]
+                    id='category',
+                    options=[{'label': c, 'value': c} for c in categories]
+                ),
+                
+                html.H4("Country", className="mt-3"),
+                dcc.Dropdown(
+                    id='country',
+                    options=[{'label': c, 'value': c} for c in countries]
                 ),
                 
                 html.H4("Tasting Notes", className='mt-3'),

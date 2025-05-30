@@ -15,6 +15,7 @@ app = Dash(name="AlcoDash", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 data = load_data('Beer')
 categories = extract_unique_values(data, 'Categories')
+countries = extract_unique_values(data, 'Country')
 taste = extract_unique_values(data, 'Tasting Notes')
 food = []
 selected_item = data.iloc[0]
@@ -24,7 +25,7 @@ app.layout = dbc.Container([
     create_title(),
     
     dbc.Row([
-        create_sidebar(categories, taste, food),
+        create_sidebar(categories, countries, taste, food),
         create_top_picks(data)
     ], className="m-1"),
     
