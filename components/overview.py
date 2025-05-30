@@ -50,7 +50,7 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
                 html.H4("Investment potential"),
                 html.P("The plot shows whether it is profitable to drink this product. The lower price and higher ABV, the better."),
                 dcc.Graph(
-                    id='abv-vs-price-scatter',
+                    id='investment-plot',
                     figure={
                         'data': [
                             {
