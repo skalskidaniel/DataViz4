@@ -63,7 +63,11 @@ def create_top_picks(data: pd.DataFrame):
                     }
                 ], # type: ignore
                 fixed_rows={'headers': True},
-                virtualization=False
+                virtualization=False,
+                css=[{
+                    'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner',
+                    'rule': 'scroll-behavior: smooth;' # 'auto' is often better than 'smooth' for virtualized tables
+                }]
             )
         ], className="bg-light border rounded m-3 p-3"
     )
