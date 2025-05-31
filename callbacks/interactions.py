@@ -4,6 +4,7 @@ import pandas as pd
 from components.overview import create_overview
 from components.top_categories import create_top_categories
 from components.top_producers import create_top_producers
+from components.notes_heatmap import create_notes_heatmap
 
 def register_callbacks(app: Dash):
     
@@ -93,3 +94,17 @@ def register_callbacks(app: Dash):
         top_categories = create_top_categories(filtered_data)
         
         return [top_producers, top_categories]
+    @app.callback(
+        Output('notes-heatmap', 'children'),
+        Input('type', 'value'),
+        Input('category', 'value'),
+        Input('country', 'value'),
+        Input('taste-filter', 'value'),
+        Input('food-filter', 'value'),
+        Input('price-range', 'value')
+    )
+    def update_notes_heatmap(type: str, category: str, country: str, tastes: list[str], food: list[str], price_range: list[int]):
+        data = load_data(type)
+        filtered_data = get_filtered_items(data, category, country, tastes, food, price_range)
+        
+        return create_notes_heatmap(filtered_data)
