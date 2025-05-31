@@ -1,9 +1,10 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 import pandas as pd
+import plotly.express as px
 
 def create_top_categories(data: pd.DataFrame):
-    # bar chart of top categories by number of dataset entries
+
     df = data.copy()
     df['Categories'] = df['Categories'].str.split(',')
     df = df.explode('Categories')
@@ -12,10 +13,12 @@ def create_top_categories(data: pd.DataFrame):
     top_categories = df['Categories'].value_counts().head(10).reset_index()
     top_categories.columns = ['Category', 'Count']
     top_categories = top_categories.sort_values(by='Count', ascending=False)
+
+    blues = px.colors.sequential.Blues[2:][::-1]
+
     return dbc.Col(
         [
-            html.H3("Top Categories", className="fs-italic"),
-            html.P("This chart shows the top 10 categories by the number of entries in the dataset."),
+            html.H3("Most Popular Categories"),
             html.Hr(),
             dcc.Graph(
                 id='top-categories-bar-chart',
@@ -25,21 +28,29 @@ def create_top_categories(data: pd.DataFrame):
                             'x': top_categories['Category'],
                             'y': top_categories['Count'],
                             'type': 'bar',
-                            'name': 'Categories',
-                            'marker': {'color': '#0dcaf0'}
+                            'marker': {
+                                'color': blues[:len(top_categories)],
+                            },
+                            'hovertemplate': 'Category: %{x}<br>Count: %{y}<extra></extra>'
                         }
                     ],
                     'layout': {
-                        'title': 'Top 10 Categories by Number of Entries',
+                        'height': 400,
                         'xaxis': {
                             'title': '',
-                            'showticklabels': False
+                            'tickmode': 'array',
+                            'tickvals': top_categories['Category'],
+                            'ticktext': top_categories['Category'],
+                            'tickangle': -60
                         },
                         'yaxis': {'title': 'Number of Entries'},
-                        'plot_bgcolor': 'rgba(0,0,0,0)',
-                        'paper_bgcolor': 'rgba(0,0,0,0)'
+                        'plot_bgcolor': '#f8f9fa',
+                        'paper_bgcolor': '#f8f9fa',
+                        'margin': {'t': 60, 'b': 120, 'l': 60, 'r': 40},
                     }
-                }
+                },
+                config={'displayModeBar': False,
+                        'staticPlot': True}
             )
         ],
         className="bg-light border rounded m-3 p-3"

@@ -1,40 +1,56 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 import pandas as pd
+import plotly.express as px
 
 def create_top_producers(data: pd.DataFrame):
-    # bar chart of top producers by number of dataset entries
+
     top_producers = data['Brand'].value_counts().head(10).reset_index()
     top_producers.columns = ['Producer', 'Count']
     top_producers = top_producers.sort_values(by='Count', ascending=False)
+    
+    blues = px.colors.sequential.Blues[2:][::-1]
+    
     return dbc.Col(
         [
-            html.H3("Top Producers", className="fs-italic"),
-            html.P("This chart shows the top 10 producers by the number of entries in the dataset."),
+            html.H3("Most Popular Producers"),
             html.Hr(),
             dcc.Graph(
                 id='top-producers-bar-chart',
                 figure={
                     'data': [
                         {
-                            'x': top_producers['Producer'],
-                            'y': top_producers['Count'],
+                            'x': top_producers['Count'],
+                            'y': top_producers['Producer'],
                             'type': 'bar',
-                            'name': 'Producers',
-                            'marker': {'color': '#0dcaf0'}
+                            'orientation': 'h',
+                            'marker': {
+                                'color': blues[:len(top_producers)],
+                            }
                         }
                     ],
                     'layout': {
-                        'title': 'Top 10 Producers by Number of Entries',
+                        'height': 40 * len(top_producers) + 80,
                         'xaxis': {
-                            'title': '',
-                            'showticklabels': False
+                            'title': {'text': 'Number of Products', 'standoff': 10},
+                            'showtitle': True
                         },
-                        'yaxis': {'title': 'Number of Entries'},
-                        'plot_bgcolor': 'rgba(0,0,0,0)',
-                        'paper_bgcolor': 'rgba(0,0,0,0)'
+                        'yaxis': {
+                            'title': '',
+                            'tickmode': 'array',
+                            'tickvals': top_producers['Producer'],
+                            'ticktext': top_producers['Producer'],
+                            'autorange': "reversed",
+                            'ticklabelposition': 'outside'
+                        },
+                        'plot_bgcolor': '#f8f9fa',
+                        'paper_bgcolor': '#f8f9fa',
+                        'margin': {'t': 60, 'b': 60, 'l': 200, 'r': 40},
+                        'hovermode': False, 
                     }
-                }
+                },
+                config={'displayModeBar': False,
+                        'staticPlot': True}
             )
         ],
         className="bg-light border rounded m-3 p-3"

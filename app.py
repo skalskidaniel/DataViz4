@@ -6,13 +6,12 @@ from components.top_picks import create_top_picks
 from callbacks.interactions import register_callbacks
 from components.title import create_title
 from components.overview import create_overview
-from components.mock_graph import create_mock_graph_panel
 from components.about import create_about_section
 from components.logo import create_logo
 from components.map import create_map
 from components.top_producers import create_top_producers
 from components.top_categories import create_top_categories
-from components.notes_heatmap import create_notes_heatmap
+from components.tasting_notes import create_notes_heatmap
 
 app = Dash(name="AlcoDash", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -43,16 +42,16 @@ app.layout = dbc.Container([
         create_overview(selected_item, data)
     ], id='overview'),
     
+    create_map(data),
+    
     dbc.Row([
         create_top_producers(data),
         create_top_categories(data)
-    ], id='top-producers-categories-row'),
+    ], id='top-producers-categories-row', className="m-1"),
 
-    dbc.Row([
+    html.Div([
         create_notes_heatmap(data),
-    ], id='notes-heatmap'),
-    
-    create_map(data)
+    ], id='notes-heatmap')
     
 ], fluid=True)
 

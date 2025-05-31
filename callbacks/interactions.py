@@ -4,7 +4,7 @@ import pandas as pd
 from components.overview import create_overview
 from components.top_categories import create_top_categories
 from components.top_producers import create_top_producers
-from components.notes_heatmap import create_notes_heatmap
+from components.tasting_notes import create_notes_heatmap
 
 def register_callbacks(app: Dash):
     
@@ -77,6 +77,8 @@ def register_callbacks(app: Dash):
                 selected_item = pd.Series()
         
         return create_overview(selected_item, filtered_data)
+    
+    
     @app.callback(
         Output('top-producers-categories-row', 'children'),
         Input('type', 'value'),
@@ -94,6 +96,8 @@ def register_callbacks(app: Dash):
         top_categories = create_top_categories(filtered_data)
         
         return [top_producers, top_categories]
+    
+    
     @app.callback(
         Output('notes-heatmap', 'children'),
         Input('type', 'value'),

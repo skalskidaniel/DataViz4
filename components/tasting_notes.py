@@ -21,24 +21,25 @@ def create_notes_heatmap(data: pd.DataFrame):
             x=top_notes['Tasting Note'],
             y=['Frequency'],
             colorscale='Blues',
-            showscale=True
+            showscale=True,
+            hovertemplate='Tasting Note: %{x}<br>Count: %{z}<extra></extra>'
         )
     )
 
     fig.update_layout(
-        xaxis=dict(title='', tickangle=45),
+        xaxis=dict(title='', tickangle=-60),
         yaxis=dict(title=''),
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        height=300
+        plot_bgcolor='#f8f9fa',
+        paper_bgcolor='#f8f9fa',
+        height=400
     )
 
-    return dbc.Col(
+    return dbc.Row(
         [
-            html.H3("Tasting Notes Heatmap", className="fs-italic"),
-            html.P("This heatmap shows the top 20 tasting notes by the number of entries in the dataset."),
+            html.H3("Tasting Notes"),
             html.Hr(),
-            dcc.Graph(figure=fig)
+            dcc.Graph(figure=fig,
+                      config={'displayModeBar': False})
         ],
         className="bg-light border rounded m-3 p-3"
     )
