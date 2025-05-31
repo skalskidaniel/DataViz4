@@ -39,7 +39,7 @@ def register_callbacks(app: Dash):
         
         top_items = get_top_scored_items(filtered_data)
         cols = ["Name", "Country", "Price", "Rating", "Score"]
-        top_items = top_items[cols].head(12)
+        top_items = top_items[cols].head(100)
         
         table_data = top_items.to_dict('records') if not top_items.empty else []
         

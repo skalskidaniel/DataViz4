@@ -8,7 +8,7 @@ def create_top_picks(data: pd.DataFrame):
     top_items = get_top_scored_items(filtered_data)
 
     cols = ["Name", "Country", "Price", "Rating", "Score"]
-    top_items = top_items[cols].head(12)
+    top_items = top_items[cols].head(100)
     return dbc.Col([
             html.H3("Our top picks"),
             html.Hr(),
@@ -18,9 +18,15 @@ def create_top_picks(data: pd.DataFrame):
                 data=top_items.to_dict('records'), # type: ignore
                 row_selectable='single',
                 style_table={
-                    'overflowX': 'auto',
+                    'overflowX': 'hidden',
+                    'overflowY': 'scroll',
+                    'height': '550px',
+                    'maxHeight': '550px',
                     'border': '1px solid #dee2e6',
                     'borderRadius': '0.375rem',
+                    'maxWidth': '100%',
+                    'width': '100%',
+                    'tableLayout': 'fixed'
                 },
                 style_header={
                     'backgroundColor': '#f8f9fa',
@@ -29,7 +35,8 @@ def create_top_picks(data: pd.DataFrame):
                     'textAlign': 'left',
                     'padding': '0.75rem',
                     'fontSize': '14px',
-                    'fontFamily': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+                    'fontFamily': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    'position': 'sticky'
                 },
                 style_cell={
                     'textAlign': 'left',
@@ -37,22 +44,26 @@ def create_top_picks(data: pd.DataFrame):
                     'border': '1px solid #dee2e6',
                     'fontSize': '14px',
                     'fontFamily': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                    'color': '#212529'
+                    'color': '#212529',
+                    'whiteSpace': 'normal',
+                    'overflow': 'hidden',
+                    'textOverflow': 'normal',
+                    'maxWidth': '200px'
                 },
                 style_data={
                     'backgroundColor': 'white',
                     'border': '1px solid #dee2e6',
                 },
-                css=[
+                style_data_conditional=[
                     {
-                        'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table',
-                        'rule': 'border-collapse: separate; border-spacing: 0;'
-                    },
-                    {
-                        'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr:hover',
-                        'rule': 'background-color: #f5f5f5 !important;'
+                        'if': {'state': 'selected'},
+                        'backgroundColor': 'white',  
+                        'border': '1px solid #dee2e6',
+                        'color': '#212529'
                     }
-                ]
+                ], # type: ignore
+                fixed_rows={'headers': True},
+                virtualization=False
             )
         ], className="bg-light border rounded m-3 p-3"
     )
