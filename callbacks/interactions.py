@@ -2,6 +2,9 @@ from dash import Input, Output, Dash, html
 from data.loader import extract_unique_values, load_data, get_filtered_items, get_top_scored_items
 import pandas as pd
 from components.overview import create_overview
+from components.top_categories import create_top_categories
+from components.top_producers import create_top_producers
+from components.notes_heatmap import create_notes_heatmap
 
 def register_callbacks(app: Dash):
     
@@ -74,3 +77,34 @@ def register_callbacks(app: Dash):
                 selected_item = pd.Series()
         
         return create_overview(selected_item, filtered_data)
+    @app.callback(
+        Output('top-producers-categories-row', 'children'),
+        Input('type', 'value'),
+        Input('category', 'value'),
+        Input('country', 'value'),
+        Input('taste-filter', 'value'),
+        Input('food-filter', 'value'),
+        Input('price-range', 'value')
+    )
+    def update_top_producers_categories(type: str, category: str, country: str, tastes: list[str], food: list[str], price_range: list[int]):
+        data = load_data(type)
+        filtered_data = get_filtered_items(data, category, country, tastes, food, price_range)
+        
+        top_producers = create_top_producers(filtered_data)
+        top_categories = create_top_categories(filtered_data)
+        
+        return [top_producers, top_categories]
+    @app.callback(
+        Output('notes-heatmap', 'children'),
+        Input('type', 'value'),
+        Input('category', 'value'),
+        Input('country', 'value'),
+        Input('taste-filter', 'value'),
+        Input('food-filter', 'value'),
+        Input('price-range', 'value')
+    )
+    def update_notes_heatmap(type: str, category: str, country: str, tastes: list[str], food: list[str], price_range: list[int]):
+        data = load_data(type)
+        filtered_data = get_filtered_items(data, category, country, tastes, food, price_range)
+        
+        return create_notes_heatmap(filtered_data)

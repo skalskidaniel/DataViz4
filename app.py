@@ -10,6 +10,9 @@ from components.mock_graph import create_mock_graph_panel
 from components.about import create_about_section
 from components.logo import create_logo
 from components.map import create_map
+from components.top_producers import create_top_producers
+from components.top_categories import create_top_categories
+from components.notes_heatmap import create_notes_heatmap
 
 app = Dash(name="AlcoDash", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -41,28 +44,13 @@ app.layout = dbc.Container([
     ], id='overview'),
     
     dbc.Row([
-        dbc.Col([
-        html.H3("Top producers", className="fs-italic"), # take into account only full data, no sidebar adjustments, sort by ratings or popularity
-        html.Hr(),
-        html.P("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-    ], className="bg-light border rounded m-3 p-3"),
-        
-        dbc.Col([
-        html.H3("Top categories", className="fs-italic"), # take into account only full data, bar chart
-        html.Hr(),
-        html.P("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-    ], className="bg-light border rounded m-3 p-3")
-    ]),
-    
+        create_top_producers(data),
+        create_top_categories(data)
+    ], id='top-producers-categories-row'),
+
     dbc.Row([
-        dbc.Col([
-        html.H3("Heatmap of tasting notes", className="fs-italic"), # take into account filtered data
-        html.Hr(),
-        html.P("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-    ], className="bg-light border rounded m-3 p-3"),
-        
-        dbc.Col(create_mock_graph_panel())
-    ]),
+        create_notes_heatmap(data),
+    ], id='notes-heatmap'),
     
     create_map(data)
     
