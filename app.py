@@ -7,11 +7,9 @@ from callbacks.interactions import register_callbacks
 from components.title import create_title
 from components.overview import create_overview
 from components.mock_graph import create_mock_graph_panel
-from components.abv_plot import create_abv_by_type
-from components.prices_plot import create_price_distribution
-from components.ratings_plot import create_ratings_plot
 from components.about import create_about_section
 from components.logo import create_logo
+from components.map import create_map
 from components.top_producers import create_top_producers
 from components.top_categories import create_top_categories
 
@@ -59,11 +57,7 @@ app.layout = dbc.Container([
         dbc.Col(create_mock_graph_panel())
     ]),
     
-    dbc.Row([
-        html.H3("Geographical map of producers", className="fs-italic"),
-        html.Hr(),
-        html.P("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-    ], className="bg-light border rounded m-3 p-3")
+    create_map(data)
     
 ], fluid=True)
 
