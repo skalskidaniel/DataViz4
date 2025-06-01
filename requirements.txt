@@ -4,5 +4,9 @@ matplotlib
 seaborn
 scipy
 dash
+<<<<<<< HEAD
 plotly
 dash_bootstrap_components
+=======
+plotly
+>>>>>>> e78bd10196bf2c6d5ec32535a024b1c08ec62cd4
