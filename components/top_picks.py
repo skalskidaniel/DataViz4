@@ -21,12 +21,9 @@ def create_top_picks(data: pd.DataFrame):
                     'overflowX': 'hidden',
                     'overflowY': 'scroll',
                     'height': '550px',
-                    'maxHeight': '550px',
                     'border': '1px solid #dee2e6',
                     'borderRadius': '0.375rem',
                     'maxWidth': '100%',
-                    'width': '100%',
-                    'tableLayout': 'fixed'
                 },
                 style_header={
                     'backgroundColor': '#f8f9fa',
@@ -35,8 +32,7 @@ def create_top_picks(data: pd.DataFrame):
                     'textAlign': 'left',
                     'padding': '0.75rem',
                     'fontSize': '14px',
-                    'fontFamily': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                    'position': 'sticky'
+                    'fontFamily': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
                 },
                 style_cell={
                     'textAlign': 'left',
@@ -62,11 +58,10 @@ def create_top_picks(data: pd.DataFrame):
                         'color': '#212529'
                     }
                 ], # type: ignore
-                fixed_rows={'headers': True},
                 virtualization=False,
                 css=[{
                     'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner',
-                    'rule': 'scroll-behavior: smooth;' # 'auto' is often better than 'smooth' for virtualized tables
+                    'rule': 'scroll-behavior: auto;'
                 }]
             )
         ], className="bg-light border rounded m-3 p-3"
