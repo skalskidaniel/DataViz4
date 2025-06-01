@@ -2,7 +2,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 def create_about_section():
-    return dbc.Col([
+    return dbc.Row([
             html.H3("About the Dashboard"),
             html.Hr(),
             html.P([
@@ -25,4 +25,4 @@ def create_about_section():
                 html.B("5. "),
                 "Comprehensive data analytics are available in the lower section of the dashboard."
             ])
-        ], class_name="bg-light border rounded m-3 p-3")
+        ], class_name="bg-light border rounded m-2 p-3")

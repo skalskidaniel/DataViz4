@@ -3,12 +3,12 @@ import dash_bootstrap_components as dbc
 
 
 def create_logo():
-    return dbc.Col([
+    return dbc.Row([
             html.Img(
                 src="/assets/logo2.png",
                 alt="Logo",
-                style={"height": "250px"},
+                style={"height": "225px"},
                 className="m-3"
             )
-        ],  width="auto",
-            className="bg-light border rounded m-3 p-3")
+        ],
+        className="bg-light border rounded m-2 p-3")

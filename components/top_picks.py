@@ -9,7 +9,7 @@ def create_top_picks(data: pd.DataFrame):
 
     cols = ["Name", "Country", "Price", "Rating", "Score"]
     top_items = top_items[cols].head(100)
-    return dbc.Col([
+    return dbc.Row([
             html.H3("Our top picks"),
             html.Hr(),
             dash_table.DataTable(
@@ -20,7 +20,7 @@ def create_top_picks(data: pd.DataFrame):
                 style_table={
                     'overflowX': 'hidden',
                     'overflowY': 'scroll',
-                    'height': '550px',
+                    'height': '590px',
                     'border': '1px solid #dee2e6',
                     'borderRadius': '0.375rem',
                     'maxWidth': '100%',
@@ -64,5 +64,5 @@ def create_top_picks(data: pd.DataFrame):
                     'rule': 'scroll-behavior: auto;'
                 }]
             )
-        ], className="bg-light border rounded m-3 p-3"
+        ], className="bg-light border rounded m-2 p-3"
     )

@@ -11,7 +11,7 @@ from components.logo import create_logo
 from components.map import create_map
 from components.top_producers import create_top_producers
 from components.top_categories import create_top_categories
-from components.tasting_notes import create_notes_heatmap
+from components.tasting_notes import create_notes_bubble_chart
 
 app = Dash(name="AlcoDash", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -29,33 +29,31 @@ app.layout = dbc.Container([
     create_title(),
     
     dbc.Row([
-        create_about_section(),
-        create_logo()
-    ], className="m-1"),
+        dbc.Col(create_about_section()),
+        dbc.Col(create_logo(), width='auto')
+    ], align='stretch'),
     
     dbc.Row([
-        create_sidebar(categories, countries, taste, food),
-        create_top_picks(data)
-    ], className="m-1"),
+        dbc.Col(create_sidebar(categories, countries, taste, food), width=3),
+        dbc.Col(create_top_picks(data), width=9)
+    ]),
     
     html.Div([
         create_overview(selected_item, data)
     ], id='overview'),
     
-    create_map(data),
-    
     dbc.Row([
-        create_top_producers(data),
-        create_top_categories(data)
-    ], id='top-producers-categories-row', className="m-1"),
+        dbc.Col(html.Div(create_top_categories(data), id='top-categories')),
+        dbc.Col(html.Div(create_notes_bubble_chart(data), id='tasting-notes-chart'))
+    ], align='stretch'),
+    
+    html.Div(create_map(data), id='map'),
 
-    html.Div([
-        create_notes_heatmap(data),
-    ], id='notes-heatmap')
+    html.Div(create_top_producers(data), id='top-producers'),
     
 ], fluid=True)
 
 register_callbacks(app)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

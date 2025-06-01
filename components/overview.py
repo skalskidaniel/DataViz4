@@ -137,4 +137,4 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
                 )
             ], md=4)
         ])
-    ], class_name="bg-light border rounded m-3 p-3")
+    ], class_name="bg-light border rounded m-2 p-3")

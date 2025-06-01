@@ -14,9 +14,9 @@ def create_top_categories(data: pd.DataFrame):
     top_categories.columns = ['Category', 'Count']
     top_categories = top_categories.sort_values(by='Count', ascending=False)
 
-    blues = px.colors.sequential.Blues[2:][::-1]
+    colors = px.colors.sequential.Sunset_r
 
-    return dbc.Col(
+    return dbc.Row(
         [
             html.H3("Most Popular Categories"),
             html.Hr(),
@@ -29,13 +29,13 @@ def create_top_categories(data: pd.DataFrame):
                             'y': top_categories['Count'],
                             'type': 'bar',
                             'marker': {
-                                'color': blues[:len(top_categories)],
+                                'color': colors,
                             },
                             'hovertemplate': 'Category: %{x}<br>Count: %{y}<extra></extra>'
                         }
                     ],
                     'layout': {
-                        'height': 400,
+                        'height': 500,
                         'xaxis': {
                             'title': '',
                             'tickmode': 'array',
@@ -53,5 +53,5 @@ def create_top_categories(data: pd.DataFrame):
                         'staticPlot': True}
             )
         ],
-        className="bg-light border rounded m-3 p-3"
+        className="bg-light border rounded m-2 p-3"
     )

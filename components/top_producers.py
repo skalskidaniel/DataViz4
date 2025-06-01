@@ -9,9 +9,8 @@ def create_top_producers(data: pd.DataFrame):
     top_producers.columns = ['Producer', 'Count']
     top_producers = top_producers.sort_values(by='Count', ascending=False)
     
-    blues = px.colors.sequential.Blues[2:][::-1]
     
-    return dbc.Col(
+    return dbc.Row(
         [
             html.H3("Most Popular Producers"),
             html.Hr(),
@@ -25,7 +24,7 @@ def create_top_producers(data: pd.DataFrame):
                             'type': 'bar',
                             'orientation': 'h',
                             'marker': {
-                                'color': blues[:len(top_producers)],
+                                'color': px.colors.sequential.Sunset_r[:],
                             }
                         }
                     ],
@@ -53,5 +52,5 @@ def create_top_producers(data: pd.DataFrame):
                         'staticPlot': True}
             )
         ],
-        className="bg-light border rounded m-3 p-3"
+        className="bg-light border rounded m-2 p-3"
     )

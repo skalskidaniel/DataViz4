@@ -2,44 +2,104 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objs as go
+import plotly.express as px
+import numpy as np
+import circlify 
 
-def create_notes_heatmap(data: pd.DataFrame):
+def create_notes_bubble_chart(data: pd.DataFrame):
     df = data.copy()
-    df['Tasting Notes'] = df['Tasting Notes'].str.split(',')
-    df = df.explode('Tasting Notes')
-    df['Tasting Notes'] = df['Tasting Notes'].astype(str).str.strip()
-    df = df[df['Tasting Notes'] != '']
-    df = df[df['Tasting Notes'] != 'nan']
+    if 'Tasting Notes' not in df.columns:
+        return dbc.Row(
+            [html.H3("Tasting Notes"), html.Hr(), html.P("No tasting notes data available.")],
+            className="bg-light border rounded m-3 p-3"
+        )
 
-    top_notes = df['Tasting Notes'].value_counts().head(20).reset_index()
+    df['Tasting Notes'] = df['Tasting Notes'].astype(str).str.split(',')
+    df = df.explode('Tasting Notes')
+    df['Tasting Notes'] = df['Tasting Notes'].str.strip()
+    df = df[df['Tasting Notes'].str.lower().isin(['', 'nan']) == False]
+    
+    if df.empty or df['Tasting Notes'].nunique() == 0:
+        return dbc.Row(
+            [html.H3("Tasting Notes"), html.Hr(), html.P("Not enough data for tasting notes chart.")],
+            className="bg-light border rounded m-3 p-3"
+        )
+
+    top_notes = df['Tasting Notes'].value_counts().nlargest(25).reset_index()
     top_notes.columns = ['Tasting Note', 'Count']
-    top_notes = top_notes.sort_values(by='Count', ascending=False)
+
+    data_for_packing = [{'id': row['Tasting Note'], 'datum': row['Count']} for index, row in top_notes.iterrows()]
+    try:
+        circles = circlify.circlify(
+            data_for_packing, 
+            show_enclosure=False,
+            target_enclosure=circlify.Circle(x=0, y=0, r=1)
+        )
+    except Exception as e:
+         return dbc.Row(
+            [html.H3("Tasting Notes"), html.Hr(), html.P(f"Error generating bubble chart: {e}")],
+            className="bg-light border rounded m-3 p-3"
+        )
+
+
+    x_coords = [c.x for c in circles]
+    y_coords = [c.y for c in circles]
+    radii = [c.r for c in circles]
+    labels = [c.ex['id'] for c in circles] 
+    counts = [c.ex['datum'] for c in circles] 
+
+    if not radii: 
+        scaled_diameters = []
+    else:
+        max_r_val = max(radii) if radii else 1
+        pixel_scale_factor = 300 
+        scaled_diameters = [r * 2 * pixel_scale_factor for r in radii]
+
+
+    bubble_texts = [f"{label}<br>Count: {count}" for label, count in zip(labels, counts)]
+
+    colors = px.colors.sequential.Sunset
 
     fig = go.Figure(
-        data=go.Heatmap(
-            z=[top_notes['Count'].tolist()],
-            x=top_notes['Tasting Note'],
-            y=['Frequency'],
-            colorscale='Blues',
-            showscale=True,
-            hovertemplate='Tasting Note: %{x}<br>Count: %{z}<extra></extra>'
-        )
+        data=[
+            go.Scatter(
+                x=x_coords,
+                y=y_coords,
+                mode='markers+text',
+                marker=dict(
+                    size=scaled_diameters, 
+                    sizemode='diameter',
+                    color=[colors[i % len(colors)] for i in range(len(labels))], 
+                    opacity=0.8,
+                    line=dict(width=1, color='DarkSlateGrey') 
+                ),
+                text=bubble_texts,
+                textposition="middle center",
+                textfont=dict(
+                    color='black',
+                ),
+                hoverinfo='skip'
+            )
+        ]
     )
 
     fig.update_layout(
-        xaxis=dict(title='', tickangle=-60),
-        yaxis=dict(title=''),
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False, visible=False, range=[-1.1, 1.1]),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False, visible=False, range=[-1.1, 1.1]), 
         plot_bgcolor='#f8f9fa',
         paper_bgcolor='#f8f9fa',
-        height=400
+        height=500,
+        margin=dict(t=20, b=20, l=20, r=20),
+        showlegend=False,
+        uniformtext_minsize=8,
+        uniformtext_mode='show'
     )
 
     return dbc.Row(
         [
             html.H3("Tasting Notes"),
             html.Hr(),
-            dcc.Graph(figure=fig,
-                      config={'displayModeBar': False})
+            dcc.Graph(id='tasting-notes-bubble-chart', figure=fig, config={'displayModeBar': False})
         ],
-        className="bg-light border rounded m-3 p-3"
+        className="bg-light border rounded m-2 p-3"
     )

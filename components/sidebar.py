@@ -2,7 +2,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 def create_sidebar(categories, countries, taste, food):
-    return  dbc.Col([
+    return  dbc.Row([
                 html.H3("Adjust your preferences"),
                 html.Hr(),
                 html.H4("Drink type"),
@@ -51,4 +51,4 @@ def create_sidebar(categories, countries, taste, food):
                     marks={i: f"${i}" for i in range(0, 1000, 200)}, #TODO adjust price range and allow to infinity
                     value=[0, 200]
                 )
-            ], width=3, className="bg-light border rounded m-3 p-3")
+            ], className="bg-light border rounded m-2 p-3")

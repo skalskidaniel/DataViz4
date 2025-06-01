@@ -33,7 +33,7 @@ def create_map(data: pd.DataFrame):
         locations='Country',
         color='Count_log',
         locationmode='country names',
-        color_continuous_scale='Blues',
+        color_continuous_scale=px.colors.sequential.Sunset, 
         labels={'Count_log': 'Number of products (Log scale)'},
         hover_data={
             'Count': True,
@@ -95,4 +95,4 @@ def create_map(data: pd.DataFrame):
                         'scrollZoom': False
                     }
                  )
-    ], className="bg-light border rounded m-3 p-3")
+    ], className="bg-light border rounded m-2 p-3")

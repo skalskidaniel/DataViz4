@@ -4,7 +4,8 @@ import pandas as pd
 from components.overview import create_overview
 from components.top_categories import create_top_categories
 from components.top_producers import create_top_producers
-from components.tasting_notes import create_notes_heatmap
+from components.tasting_notes import create_notes_bubble_chart
+from components.map import create_map
 
 def register_callbacks(app: Dash):
     
@@ -13,10 +14,18 @@ def register_callbacks(app: Dash):
         Output('country', 'value'),
         Output('taste-filter', 'value'),
         Output('food-filter', 'value'),
+        Output('map', 'children'),
+        Output('top-producers', 'children'),
+        Output('tasting-notes-chart', 'children'),
+        Output('top-categories', 'children'),
         Input('type', 'value')
     )
     def changed_drink_type(type):
-        return None, None, None, None
+        data = load_data(type)
+        top_producers = create_top_producers(data)
+        top_categories = create_top_categories(data)
+        
+        return None, None, None, None, create_map(data), top_producers, create_notes_bubble_chart(data), top_categories
     
     @app.callback(
     Output('category', 'options'),
@@ -77,17 +86,3 @@ def register_callbacks(app: Dash):
                 selected_item = pd.Series()
         
         return create_overview(selected_item, filtered_data)
-    
-    
-    @app.callback(
-        Output('top-producers-categories-row', 'children'),
-        Output('notes-heatmap', 'children'),
-        Input('type', 'value')
-    )
-    def update_top_producers_categories(type: str):
-        data = load_data(type)
-        
-        top_producers = create_top_producers(data)
-        top_categories = create_top_categories(data)
-        
-        return [top_producers, top_categories], create_notes_heatmap(data)
