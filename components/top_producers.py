@@ -5,7 +5,7 @@ import plotly.express as px
 
 def create_top_producers(data: pd.DataFrame):
 
-    top_producers = data['Brand'].value_counts().head(10).reset_index()
+    top_producers = data['Brand'].value_counts().head(5).reset_index()
     top_producers.columns = ['Producer', 'Count']
     top_producers = top_producers.sort_values(by='Count', ascending=False)
     

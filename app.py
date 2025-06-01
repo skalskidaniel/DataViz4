@@ -1,3 +1,4 @@
+import os
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 from data.loader import load_data, extract_unique_values
@@ -56,4 +57,4 @@ app.layout = dbc.Container([
 register_callbacks(app)
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)), debug=False)

@@ -10,7 +10,7 @@ def create_top_categories(data: pd.DataFrame):
     df = df.explode('Categories')
     df['Categories'] = df['Categories'].astype(str).str.strip()
     df = df[df['Categories'] != '']
-    top_categories = df['Categories'].value_counts().head(10).reset_index()
+    top_categories = df['Categories'].value_counts().head(5).reset_index()
     top_categories.columns = ['Category', 'Count']
     top_categories = top_categories.sort_values(by='Count', ascending=False)
 
