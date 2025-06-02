@@ -14,11 +14,11 @@ def create_top_categories(data: pd.DataFrame):
     top_categories.columns = ['Category', 'Count']
     top_categories = top_categories.sort_values(by='Count', ascending=False)
 
-    colors = px.colors.sequential.Sunset_r
+    colors = px.colors.sequential.Blues_r[2:]
 
     return dbc.Row(
         [
-            html.H3("Most Popular Categories"),
+            html.H3("Most Popular Categories", style={"color": "#2c3e50", "fontWeight": "bold"}),
             html.Hr(),
             dcc.Graph(
                 id='top-categories-bar-chart',

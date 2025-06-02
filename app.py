@@ -5,10 +5,8 @@ from data.loader import load_data, extract_unique_values
 from components.sidebar import create_sidebar
 from components.top_picks import create_top_picks
 from callbacks.interactions import register_callbacks
-from components.title import create_title
+from components.header import create_header
 from components.overview import create_overview
-from components.about import create_about_section
-from components.logo import create_logo
 from components.map import create_map
 from components.top_producers import create_top_producers
 from components.top_categories import create_top_categories
@@ -27,12 +25,7 @@ app.layout = dbc.Container([
     
     dcc.Store(id='selected-item-store'),
 
-    create_title(),
-    
-    dbc.Row([
-        dbc.Col(create_about_section()),
-        dbc.Col(create_logo(), width='auto')
-    ], align='stretch'),
+    create_header(),
     
     dbc.Row([
         dbc.Col(create_sidebar(categories, countries, taste, food), width=3),

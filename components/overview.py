@@ -51,59 +51,63 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
         return str(value)
 
     return dbc.Row([
-        html.H3("Selected product overview"),
+        html.H3("Selected product overview", style={"color": "#2c3e50", "fontWeight": "bold"}),
         html.Hr(),
         dbc.Row([
             dbc.Col([
-                html.H4("Name"),
-                html.P(format_value(extract_item_value(selected_item, 'Name'))),
-                html.H4("Type"),
-                html.P(format_value(extract_item_value(selected_item, 'Type'))),
-                html.H4("Price"),
-                html.P(format_value(extract_item_value(selected_item, 'Price'))),
-                html.H4("Brand"),
-                html.P(format_value(extract_item_value(selected_item, 'Brand'))),
-                html.H4("Country"),
-                html.P(format_value(extract_item_value(selected_item, 'Country'))),
-                html.H4("Ratings"),
-                html.P(format_value(extract_item_value(selected_item, 'Rating'))),
-                html.H4("Rate count"),
-                html.P(format_value(extract_item_value(selected_item, 'Rate Count')))
+                html.H4("Name", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Name')), style={"color": "#7f8c8d"}),
+                html.H4("Type", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Type')), style={"color": "#7f8c8d"}),
+                html.H4("Price", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Price')), style={"color": "#7f8c8d"}),
+                html.H4("Brand", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Brand')), style={"color": "#7f8c8d"}),
+                html.H4("Country", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Country')), style={"color": "#7f8c8d"}),
+                html.H4("Ratings", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Rating')), style={"color": "#7f8c8d"}),
+                html.H4("Rate count", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Rate Count')), style={"color": "#7f8c8d"})
             ], md=4),
             
             dbc.Col([
-                html.H4("Description"),
-                html.P(format_value(extract_item_value(selected_item, 'Description'))),
-                html.H4("Alcohol by Volume"),
-                html.P(format_value(extract_item_value(selected_item, 'ABV'))),
-                html.H4("Available volumes"),
-                html.P(format_value(extract_item_value(selected_item, 'Volume'))),
-                html.H4("Suggested serving temperature"),
-                html.P(format_value(extract_item_value(selected_item, 'Suggested Serving Temperature'))),
-                html.H4("Tasting notes"),
-                html.P(format_value(extract_item_value(selected_item, 'Tasting Notes')))
+                html.H4("Description", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Description')), style={"color": "#7f8c8d"}),
+                html.H4("Alcohol by Volume", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'ABV')), style={"color": "#7f8c8d"}),
+                html.H4("Available volumes", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Volume')), style={"color": "#7f8c8d"}),
+                html.H4("Suggested serving temperature", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Suggested Serving Temperature')), style={"color": "#7f8c8d"}),
+                html.H4("Tasting notes", style={"color": "#34495e"}),
+                html.P(format_value(extract_item_value(selected_item, 'Tasting Notes')), style={"color": "#7f8c8d"})
             ], md=4), 
             
             dbc.Col([
-                html.H4("Percentile Rank"),
+                html.H4("Percentile Rank", style={"color": "#34495e"}),
+                html.P([
+                    "Our score is computed as ",
+                    html.Code("ABV × 10 + Rating × RateCount − Price × 2", style={"fontFamily": "monospace", "background": "#f4f4f4", "padding": "2px 6px", "borderRadius": "4px", 'color': '#34495e'})
+                ], style={"color": "#7f8c8d", "marginBottom": "8px"}),
                 html.P([
                     "Selected product score: ",
                     html.Strong(f"{selected_score:.0f}")
-                ]),
+                ], style={"color": "#7f8c8d"}),
                 html.P([
                     "This product scores better than ",
                     html.Strong(f"{selected_percentile:.1f}%"),
                     " of other products."
-                ]),
+                ], style={"color": "#7f8c8d"}),
                 dcc.Graph(
                     id='score-gauge-plot',
                     figure=go.Figure(
                         go.Indicator(
                             mode = "gauge+number",
                             value = selected_percentile,
-                            number = {'suffix': "%", 'font': {'size': 24, 'color': 'black'}},
+                            number = {'suffix': "%", 'font': {'size': 24, 'color': '#2c3e50'}},
                             domain = {'x': [0, 1], 'y': [0, 1]},
-                            title = {'text': '', 'font': {'color': 'black'}},
+                            title = {'text': '', 'font': {'color': '#2c3e50'}},
                             gauge = {
                                 'axis': {
                                     'range': [0, 100],
@@ -113,14 +117,14 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
                                 'bar': {'thickness': 0}, 
                                 'borderwidth': 0.5,
                                 'steps': [ 
-                                    {'range': [0, 20], 'color': '#d9534f'},
-                                    {'range': [20, 40], 'color': '#f0ad4e'},
-                                    {'range': [40, 60], 'color': '#ffc107'},
-                                    {'range': [60, 80], 'color': '#5cb85c'},
-                                    {'range': [80, 100], 'color': '#4CAF50'} 
+                                    {'range': [0, 20], 'color': '#e3f2fd'},
+                                    {'range': [20, 40], 'color': '#bbdefb'},
+                                    {'range': [40, 60], 'color': '#90caf9'},
+                                    {'range': [60, 80], 'color': '#42a5f5'},
+                                    {'range': [80, 100], 'color': '#1976d2'} 
                                 ],
                                 'threshold': {
-                                    'line': {'color': "black", 'width': 3}, 
+                                    'line': {'color': "#1565c0", 'width': 3}, 
                                     'thickness': 0.85,
                                     'value': selected_percentile
                                 }

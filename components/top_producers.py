@@ -12,7 +12,7 @@ def create_top_producers(data: pd.DataFrame):
     
     return dbc.Row(
         [
-            html.H3("Most Popular Producers"),
+            html.H3("Most Popular Producers", style={"color": "#2c3e50", "fontWeight": "bold"}),
             html.Hr(),
             dcc.Graph(
                 id='top-producers-bar-chart',
@@ -24,7 +24,7 @@ def create_top_producers(data: pd.DataFrame):
                             'type': 'bar',
                             'orientation': 'h',
                             'marker': {
-                                'color': px.colors.sequential.Sunset_r[:],
+                                'color': px.colors.sequential.Blues_r[2:],
                             }
                         }
                     ],

@@ -58,7 +58,16 @@ def create_notes_bubble_chart(data: pd.DataFrame):
 
     bubble_texts = [f"{label}<br>Count: {count}" for label, count in zip(labels, counts)]
 
-    colors = px.colors.sequential.Sunset
+    # Create a better color palette - using darker blues and lighter blues for contrast
+    blues_palette = ['#08519c', '#2171b5', '#4292c6', '#6baed6', '#9ecae1', '#c6dbef', '#1565c0', '#1976d2']
+    
+    # Map colors based on bubble size (larger bubbles get darker colors)
+    sorted_indices = sorted(range(len(counts)), key=lambda i: counts[i], reverse=True)
+    bubble_colors = ['#f0f0f0'] * len(labels)  # default light color
+    
+    for i, idx in enumerate(sorted_indices):
+        color_idx = i % len(blues_palette)
+        bubble_colors[idx] = blues_palette[color_idx]
 
     fig = go.Figure(
         data=[
@@ -69,16 +78,21 @@ def create_notes_bubble_chart(data: pd.DataFrame):
                 marker=dict(
                     size=scaled_diameters, 
                     sizemode='diameter',
-                    color=[colors[i % len(colors)] for i in range(len(labels))], 
+                    color=bubble_colors,
                     opacity=0.8,
-                    line=dict(width=1, color='DarkSlateGrey') 
+                    line=dict(width=1, color='#2c3e50') 
                 ),
-                text=bubble_texts,
+                text=[label for label in labels],  # Show only label names
                 textposition="middle center",
                 textfont=dict(
-                    color='black',
+                    color='#2c3e50',  # Dark text for better visibility
+                    size=10,
+                    family="Arial Black",
+                    weight='normal'
                 ),
-                hoverinfo='skip'
+                hovertemplate='<b>%{text}</b><br>Count: %{customdata}<extra></extra>',
+                customdata=counts,
+                hoverinfo='text'
             )
         ]
     )
@@ -97,7 +111,7 @@ def create_notes_bubble_chart(data: pd.DataFrame):
 
     return dbc.Row(
         [
-            html.H3("Tasting Notes"),
+            html.H3("Tasting Notes", style={"color": "#2c3e50", "fontWeight": "bold"}),
             html.Hr(),
             dcc.Graph(id='tasting-notes-bubble-chart', figure=fig, config={'displayModeBar': False})
         ],

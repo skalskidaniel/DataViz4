@@ -3,9 +3,9 @@ import dash_bootstrap_components as dbc
 
 def create_sidebar(categories, countries, taste, food):
     return  dbc.Row([
-                html.H3("Adjust your preferences"),
+                html.H3("Parameters", style={"color": "#2c3e50", "fontWeight": "bold"}),
                 html.Hr(),
-                html.H4("Drink type"),
+                html.H4("Drink type", style={"color": "#34495e"}),
                 dbc.RadioItems(
                     id='type',
                     options=[
@@ -16,33 +16,33 @@ def create_sidebar(categories, countries, taste, food):
                     value='Beer'
                 ),
                 
-                html.H4("Category", className='mt-3'),
+                html.H4("Category", className='mt-3', style={"color": "#34495e"}),
                 dcc.Dropdown(
                     id='category',
                     options=[{'label': c, 'value': c} for c in categories]
                 ),
                 
-                html.H4("Country", className="mt-3"),
+                html.H4("Country", className="mt-3", style={"color": "#34495e"}),
                 dcc.Dropdown(
                     id='country',
                     options=[{'label': c, 'value': c} for c in countries]
                 ),
                 
-                html.H4("Tasting Notes", className='mt-3'),
+                html.H4("Tasting Notes", className='mt-3', style={"color": "#34495e"}),
                 dcc.Dropdown(
                     id='taste-filter',
                     options=[{'label': c, 'value': c} for c in taste], 
                     multi=True
                 ),
                 
-                html.H4("Food Pairing", className='mt-3'), 
+                html.H4("Food Pairing", className='mt-3', style={"color": "#34495e"}), 
                 dcc.Dropdown(
                     id='food-filter',
                     options=[{'label': c, 'value': c} for c in food],
                     multi=True
                 ),
                 
-                html.H4("Price range (per liter)", className='mt-3'),
+                html.H4("Price range (per liter)", className='mt-3', style={"color": "#34495e"}),
                 dcc.RangeSlider(
                     id='price-range',
                     min=0,

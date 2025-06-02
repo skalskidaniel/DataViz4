@@ -33,7 +33,7 @@ def create_map(data: pd.DataFrame):
         locations='Country',
         color='Count_log',
         locationmode='country names',
-        color_continuous_scale=px.colors.sequential.Sunset, 
+        color_continuous_scale=px.colors.sequential.Blues, 
         labels={'Count_log': 'Number of products (Log scale)'},
         hover_data={
             'Count': True,
@@ -85,7 +85,7 @@ def create_map(data: pd.DataFrame):
     )
     
     return dbc.Row([
-        html.H3("Map of producers"),
+        html.H3("Map of producers", style={"color": "#2c3e50", "fontWeight": "bold"}),
         html.Hr(className="mb-3"),
         dcc.Graph(figure=fig, 
                   style={"width": "100vw", "height": "90vh"},
