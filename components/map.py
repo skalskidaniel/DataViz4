@@ -65,7 +65,7 @@ def create_map(data: pd.DataFrame):
     )
     
     fig.update_layout(
-        geo=dict(projection_type='robinson'),
+        geo=dict(projection_type='mollweide'),
         margin=dict(l=0, r=0, t=0, b=0),
         plot_bgcolor="#f8f9fa",
         paper_bgcolor="#f8f9fa",
@@ -85,8 +85,6 @@ def create_map(data: pd.DataFrame):
     )
     
     return dbc.Row([
-        html.H3("Map of producers", style={"color": "#2c3e50", "fontWeight": "bold"}),
-        html.Hr(className="mb-3"),
         dcc.Graph(figure=fig, 
                   style={"width": "100vw", "height": "90vh"},
                   config={
@@ -95,4 +93,4 @@ def create_map(data: pd.DataFrame):
                         'scrollZoom': False
                     }
                  )
-    ], className="bg-light border rounded m-2 p-3")
+    ], className="m-2")

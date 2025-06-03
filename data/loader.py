@@ -1,130 +1,108 @@
 import pandas as pd
+import math
 
-def load_data(type: str) -> pd.DataFrame:
-    """
-        Loads data from csv file and updates column types:
-        - Numeric columns are converted to float.
-        - Comma-separated string columns are converted to lists.
+class Loader:
+    def __init__(self) -> None:
+        self.data = pd.DataFrame()
+        self.load_data('beer')
         
-        Args:
-            type (str): [beer, wine, spirits]
+    def load_data(self, type: str):
 
-        Returns:
-            data: pandas DataFrame
-    """
-
-    data = None
-    if type.lower() == 'beer':
-        data = pd.read_csv("data/beer_data.csv",  index_col=0)
-    elif type.lower() == 'wine':
-        data = pd.read_csv("data/wine_data.csv", index_col=0)
-    elif type.lower() == 'spirits':
-        data = pd.read_csv("data/spirits_data.csv", index_col=0)
-    else:
-        raise ValueError(f"Cannot find data for {type}")
-    
-    return data
-
-def extract_unique_values(data: pd.DataFrame, col: str) -> list:
-    """
-        Extracts unique, stripped values from a specified column in a pandas DataFrame,
-        where each cell may contain comma-separated values.
-
-        Args:
-            data (pd.DataFrame): The DataFrame containing the data.
-            col (str): The name of the column to extract unique values from.
-
-        Returns:
-            list: A sorted list of unique, stripped values found in the specified column.
-
-        Raises:
-            ValueError: If the specified column does not exist in the DataFrame.
-    """
-    
-    if col not in data.columns:
-        raise ValueError(f"Data {data} does not have {col} column")
-    else:
-        return sorted(list({t.strip() for i in data[col] for t in str(i).split(',') if pd.notnull(i)}))
-    
-    
-def extract_item_value(item: pd.Series, col: str):
-    """
-    Extracts and returns a sorted list of unique, stripped values from a specified column in a pandas Series.
-    Parameters:
-        item (pd.Series): The pandas Series from which to extract values.
-        col (str): The name of the column to extract values from.
-    Returns:
-        list: A sorted list of unique, stripped values from the specified column. 
-              If the column does not exist, returns ["Not available"].
-    Notes:
-        - Values in the column are expected to be comma-separated strings.
-        - Null values are ignored.
-    """
-    
-    if col not in item.index or not pd.notnull(item[col]):
-        return ["Not available"]
-    else:
-        return sorted(list({i.strip() for i in str(item[col]).split(',')}))
-
-
-def get_filtered_items(data: pd.DataFrame, category: str, country: str, taste: list[str], food: list[str], price_range: list[int]) -> pd.DataFrame:
-    """    
-        Filters a DataFrame of food or beverage items based on category, tasting notes, food pairings, and price range.
-        data (pd.DataFrame): The input DataFrame containing items with columns such as "Categories", "Country", "Tasting Notes", "Food Pairing", "Price", and "Rating".
-        pd.DataFrame: The filtered DataFrame after applying all filters.
-    """
-    df = data.copy()
-
-    if category:
-        df = df[df["Categories"].apply(lambda x: category in (x if isinstance(x, list) else str(x).split(',')))]
-
-    if country:
-        df = df[df["Country"].apply(lambda x: country in (x if isinstance(x, list) else str(x).split(',')))]
+        if type.lower() == 'beer':
+            self.data = pd.read_csv("data/beer_data.csv",  index_col=0)
+        elif type.lower() == 'wine':
+            self.data = pd.read_csv("data/wine_data.csv", index_col=0)
+        elif type.lower() == 'spirits':
+            self.data = pd.read_csv("data/spirits_data.csv", index_col=0)
+        else:
+            self.data = pd.DataFrame()
+            raise ValueError(f"Cannot find data for {type}")
         
-    if taste:
-        for t in taste:
-            df = df[df["Tasting Notes"].apply(lambda x: t in (x if isinstance(x, list) else str(x).split(',')))]
+    def get_data(self):
+        self.compute_score()
+        
+        return self.data
 
-    if food:
-        for f in food:
-            df = df[df["Food Pairing"].apply(lambda x: f in (x if isinstance(x, list) else str(x).split(',')))]
+    def extract_unique_values(self, col: str) -> list:
 
-    if len(price_range) != 2:
-        raise ValueError("price_range must be a two-element list")
+        if col not in self.data.columns:
+            return []
+        else:
+            return sorted(list({t.strip() for i in self.data[col] for t in str(i).split(',') if pd.notnull(i)}))
+        
+    def extract_price_range(self):
+        self.data["Price_numeric"] = self.data["Price"].astype(str).str.replace(r'[\$,]', '', regex=True)
+        self.data["Price_numeric"] = pd.to_numeric(self.data["Price_numeric"], errors="coerce")
+        
+        price_series = self.data["Price_numeric"].dropna()
+        if price_series.empty:
+            min_price, max_price = 0, 0
+        else:
+            min_price, max_price = price_series.min(), price_series.max()
+        
+        self.data = self.data.drop('Price_numeric', axis=1)
+        
+        return min_price, max_price
     
-    df["Price_numeric"] = df["Price"].astype(str).str.replace(r'[\$,]', '', regex=True)
-    df["Price_numeric"] = pd.to_numeric(df["Price_numeric"], errors="coerce")
-    
-    df = df[(df["Price_numeric"] >= price_range[0]) & (df["Price_numeric"] <= price_range[1])]
-    
-    df = df.drop('Price_numeric', axis=1)
+    def get_price_marks(self):
+        max_price = self.extract_price_range()[1]
+        max_price = int(math.ceil(max_price / 10.0)) * 10
+        step = int(max_price / 5) if max_price >= 5 else 1
+        marks = {i: f"${i}" for i in range(0, max_price, step)}
+        marks[max_price] = f"${max_price}"
+        
+        return marks
+        
+    def extract_options_for_sidebar(self):
+        cols = ["Categories", "Country", "Tasting Notes", "Food Pairing"]
+        
+        o1 = self.extract_unique_values(cols[0])
+        o2 = self.extract_unique_values(cols[1])
+        o3 = self.extract_unique_values(cols[2])
+        o4 = self.extract_unique_values(cols[3])
+        o5 = math.ceil(self.extract_price_range()[1] / 10.0) * 10
+        o6 = self.get_price_marks()
+        
+        return o1, o2, o3, o4, o5, o6, [0, o5]
+        
+        
+    def extract_item_value(self, item: pd.Series, col: str):
 
-    return df
+        if col not in item.index or not pd.notnull(item[col]):
+            return ["Not available"]
+        else:
+            return sorted(list({i.strip() for i in str(item[col]).split(',')}))
 
-def get_top_scored_items(data: pd.DataFrame) -> pd.DataFrame:
-    """
-    Returns the top 10 items from the input DataFrame based on a custom score.
-    The score for each item is calculated as:
-        Score = max(ABV * 10 + Rating * RateCount - Price * 2, 0)
-    where:
-        - ABV: Alcohol by volume (expected as a float or convertible to float)
-        - Rating: User rating (expected as a float or convertible to float)
-        - RateCount: Number of ratings (expected as a float or convertible to float)
-        - Price: Price value (expected as a string with optional '$' and ',' characters, convertible to float)
-    Parameters:
-        data (pd.DataFrame): Input DataFrame containing columns 'ABV', 'Rating', 'RateCount', and 'Price'.
-    Returns:
-        pd.DataFrame: DataFrame containing the top 10 items sorted by the computed 'Score' in descending order.
-    """
-    
-    df = data.copy()
 
-    df["Score"] = (
-        df["ABV"].astype(str).str.replace('%', '', regex=False).astype(float) * 10
-        + df["Rating"].astype(float) * df["Rate Count"].astype(float)
-        - df["Price"].astype(str).str.replace(r'[\$,]', '', regex=True).astype(float) * 2
-    ).clip(lower=0).round()
-    
-    df = df.sort_values("Score", ascending=False)
-    
-    return df
+    def filter_items(self, category: str, country: str, taste: list[str], food: list[str], price_range: list[int]):
+
+        if category:
+            self.data = self.data[self.data["Categories"].apply(lambda x: category in (x if isinstance(x, list) else str(x).split(',')))]
+
+        if country:
+            self.data = self.data[self.data["Country"].apply(lambda x: country in (x if isinstance(x, list) else str(x).split(',')))]
+            
+        if taste:
+            for t in taste:
+                self.data = self.data[self.data["Tasting Notes"].apply(lambda x: t in (x if isinstance(x, list) else str(x).split(',')))]
+
+        if food:
+            for f in food:
+                self.data = self.data[self.data["Food Pairing"].apply(lambda x: f in (x if isinstance(x, list) else str(x).split(',')))]
+
+        self.data["Price_numeric"] = self.data["Price"].astype(str).str.replace(r'[\$,]', '', regex=True)
+        self.data["Price_numeric"] = pd.to_numeric(self.data["Price_numeric"], errors="coerce")
+        
+        self.data = self.data[(self.data["Price_numeric"] >= price_range[0]) & (self.data["Price_numeric"] <= price_range[1])]
+        
+        self.data = self.data.drop('Price_numeric', axis=1)
+
+    def compute_score(self):
+        
+        self.data["Score"] = (
+            self.data["ABV"].astype(str).str.replace('%', '', regex=False).astype(float) * 10
+            + self.data["Rating"].astype(float) * self.data["Rate Count"].astype(float)
+            - self.data["Price"].astype(str).str.replace(r'[\$,]', '', regex=True).astype(float) * 2
+        ).clip(lower=0).round()
+        
+        self.data = self.data.sort_values("Score", ascending=False)

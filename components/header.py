@@ -31,4 +31,4 @@ def create_header():
             ], className="text-center", style={"color": "#7f8c8d", "fontSize": "1rem"}),
             
         ], width=12)
-    ], className="bg-light border rounded m-2 p-3")
+    ], className="p-3")

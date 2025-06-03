@@ -111,9 +111,7 @@ def create_notes_bubble_chart(data: pd.DataFrame):
 
     return dbc.Row(
         [
-            html.H3("Tasting Notes", style={"color": "#2c3e50", "fontWeight": "bold"}),
-            html.Hr(),
             dcc.Graph(id='tasting-notes-bubble-chart', figure=fig, config={'displayModeBar': False})
         ],
-        className="bg-light border rounded m-2 p-3"
+        className="m-2"
     )

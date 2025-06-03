@@ -4,11 +4,22 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go # Import go
 from scipy.stats import percentileofscore # Import percentileofscore
-from data.loader import extract_item_value
+from data.loader import Loader
 
-def create_overview(selected_item: pd.Series, data: pd.DataFrame):
+def create_overview(selected_id, data: pd.DataFrame):
+    # handle Series, list/tuple/ndarray of indices, or a single int index
+    if isinstance(selected_id, pd.Series):
+        selected_item = selected_id
+    elif isinstance(selected_id, (list, tuple, np.ndarray)):
+        idx = selected_id[0] if len(selected_id) > 0 else 0
+        selected_item = data.iloc[idx]
+    else:
+        selected_item = data.iloc[selected_id]
     
-    df = data.copy()
+    loader = Loader()
+    loader.data = data.copy()
+    
+    df = loader.get_data()
     
     df["Score"] = (
         df["ABV"].astype(str).str.replace('%', '', regex=False).astype(float) * 10
@@ -51,37 +62,35 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
         return str(value)
 
     return dbc.Row([
-        html.H3("Selected product overview", style={"color": "#2c3e50", "fontWeight": "bold"}),
-        html.Hr(),
-        dbc.Row([
+            html.Hr(),
             dbc.Col([
                 html.H4("Name", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Name')), style={"color": "#7f8c8d"}),
-                html.H4("Type", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Type')), style={"color": "#7f8c8d"}),
+                html.P(format_value(loader.extract_item_value(selected_item, 'Name')), style={"color": "#7f8c8d"}),
+                html.H4("Category", style={"color": "#34495e"}),
+                html.P(format_value(loader.extract_item_value(selected_item, 'Categories')), style={"color": "#7f8c8d"}),
                 html.H4("Price", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Price')), style={"color": "#7f8c8d"}),
+                html.P(format_value(loader.extract_item_value(selected_item, 'Price')), style={"color": "#7f8c8d"}),
                 html.H4("Brand", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Brand')), style={"color": "#7f8c8d"}),
+                html.P(format_value(loader.extract_item_value(selected_item, 'Brand')), style={"color": "#7f8c8d"}),
                 html.H4("Country", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Country')), style={"color": "#7f8c8d"}),
+                html.P(format_value(loader.extract_item_value(selected_item, 'Country')), style={"color": "#7f8c8d"}),
                 html.H4("Ratings", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Rating')), style={"color": "#7f8c8d"}),
+                html.P(format_value(loader.extract_item_value(selected_item, 'Rating')), style={"color": "#7f8c8d"}),
                 html.H4("Rate count", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Rate Count')), style={"color": "#7f8c8d"})
+                html.P(format_value(loader.extract_item_value(selected_item, 'Rate Count')), style={"color": "#7f8c8d"})
             ], md=4),
             
             dbc.Col([
                 html.H4("Description", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Description')), style={"color": "#7f8c8d"}),
+                html.P(format_value(loader.extract_item_value(selected_item, 'Description')), style={"color": "#7f8c8d"}),
                 html.H4("Alcohol by Volume", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'ABV')), style={"color": "#7f8c8d"}),
+                html.P(format_value(loader.extract_item_value(selected_item, 'ABV')), style={"color": "#7f8c8d"}),
                 html.H4("Available volumes", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Volume')), style={"color": "#7f8c8d"}),
+                html.P(format_value(loader.extract_item_value(selected_item, 'Volume')), style={"color": "#7f8c8d"}),
                 html.H4("Suggested serving temperature", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Suggested Serving Temperature')), style={"color": "#7f8c8d"}),
+                html.P(format_value(loader.extract_item_value(selected_item, 'Suggested Serving Temperature')), style={"color": "#7f8c8d"}),
                 html.H4("Tasting notes", style={"color": "#34495e"}),
-                html.P(format_value(extract_item_value(selected_item, 'Tasting Notes')), style={"color": "#7f8c8d"})
+                html.P(format_value(loader.extract_item_value(selected_item, 'Tasting Notes')), style={"color": "#7f8c8d"})
             ], md=4), 
             
             dbc.Col([
@@ -141,4 +150,3 @@ def create_overview(selected_item: pd.Series, data: pd.DataFrame):
                 )
             ], md=4)
         ])
-    ], class_name="bg-light border rounded m-2 p-3")

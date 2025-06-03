@@ -1,28 +1,22 @@
 from dash import html, dcc, dash_table
 import dash_bootstrap_components as dbc
 import pandas as pd
-from data.loader import get_filtered_items, get_top_scored_items
 
 def create_top_picks(data: pd.DataFrame):
-    filtered_data = get_filtered_items(data, "", "", [], [], [0, 200])
-    top_items = get_top_scored_items(filtered_data)
-
     cols = ["Name", "Country", "Price", "Rating", "Score"]
-    top_items = top_items[cols].head(100)
+    top_items = data[cols].head(100)
     return dbc.Row([
-            html.H3("Our top picks", style={"color": "#2c3e50", "fontWeight": "bold"}),
-            html.Hr(),
             dash_table.DataTable(
                 id='top-picks-table',
                 columns=[{"name": col, "id": col} for col in top_items.columns],
                 data=top_items.to_dict('records'), # type: ignore
                 row_selectable='single',
+                selected_rows=[],
                 style_table={
                     'overflowX': 'hidden',
                     'overflowY': 'scroll',
-                    'height': '557px',
+                    'maxHeight': '700px',
                     'border': '1px solid #dee2e6',
-                    'borderRadius': '0.375rem',
                     'maxWidth': '100%',
                 },
                 style_header={
@@ -64,5 +58,5 @@ def create_top_picks(data: pd.DataFrame):
                     'rule': 'scroll-behavior: auto;'
                 }]
             )
-        ], className="bg-light border rounded m-2 p-3"
+        ]
     )
